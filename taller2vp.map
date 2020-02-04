@@ -1,0 +1,230 @@
+#######################################################
+#	NOMBRE: Leidy Vanessa Prado García
+#	CODIGO: 1631162
+#	ASIGNATURA: Diseño para proyectos de SIG 
+#	PROFESOR: ING. Fabio Herrera
+########################TALLER 2 #########################
+
+####Creación del mapa  ----------------------------	
+MAP
+	NAME taller2vp
+		SIZE 800 600
+		STATUS ON
+		#EXTENT [xmin] [ymin] [xmax] [ymax]
+		EXTENT 1053855.50 860198.93 1068480.77 879011.06
+		
+		SHAPEPATH "geodata/"
+		FONTSET "lib/fonts/fonts.txt"
+		SYMBOLSET "lib/symbols/symbols.sym"
+		
+		IMAGECOLOR 255 255 255
+		UNITS METERS
+
+	WEB
+		IMAGEPATH "/var/www/html/sig3/mapserver-sig3/tmp/"
+		IMAGEURL "tmp/"
+	END
+	
+### Leyenda del mapa  ----------------------------	
+	LEGEND
+		STATUS EMBED
+		IMAGECOLOR 200 200 200
+		POSITION LL
+		KEYSIZE 20 12
+		KEYSPACING 5 5
+		LABEL
+			TYPE TRUETYPE
+			FONT "sans"
+			SIZE 9
+			COLOR 0 0 0
+		END
+		OUTLINECOLOR 51 51 51
+		#TRANSPARENT on
+	END
+
+### Escala grafica ----------------------------	
+	SCALEBAR
+		STYLE 0
+		STATUS EMBED
+		SIZE 250 4
+		COLOR 0 0 0
+		UNITS METERS
+		INTERVALS 5
+		TRANSPARENT off
+		POSITION LR
+		BACKGROUNDCOLOR 255 255 255
+		IMAGECOLOR 255 255 255
+		OUTLINECOLOR 211 211 211
+		LABEL
+			COLOR 0 0 0
+			SIZE TINY
+		END 
+	END
+
+###Creación Rosa de los vientos(Norte) ----------------------------	
+
+	LAYER
+		NAME "Norte"
+		TYPE POINT
+		STATUS ON
+		TRANSFORM OFF
+		POSTLABELCACHE TRUE
+		FEATURE
+			POINTS 
+				650  100
+			END
+		END
+		CLASS
+			SYMBOL 'rosavientos'
+			COLOR 0 0 0
+			OUTLINECOLOR 0 0 0
+			STYLE END
+		END
+	END
+
+
+###Capa Barrios---------------------------------------
+	LAYER
+		NAME "Poligonos"
+		STATUS ON
+		DATA "barrios_cali.shp"
+		TYPE POLYGON
+		
+		LABELITEM "barrio"
+		LABELCACHE ON
+		
+		CLASS
+			NAME "Barrios Cali"
+			STYLE
+				COLOR 146 137 129
+				OUTLINECOLOR 0 0 0
+			END
+			
+			LABEL
+				COLOR 0 0 0
+				FONT sans
+				TYPE TRUETYPE
+				POSITION CC
+				PARTIALS TRUE
+				SIZE 5
+				BUFFER 1
+				OUTLINECOLOR 255 255 255
+			END
+		END
+	END
+
+###Capa Rutas MIO  ----------------------------		
+	LAYER
+		NAME "Lineas"
+		STATUS ON
+		DATA "rutas_mio.shp"
+		TYPE LINE
+		CLASS
+			NAME "Rutas MIO"
+			STYLE
+				COLOR 179 18 23
+				OUTLINECOLOR 7 123 123
+			END
+		END
+	END
+
+###Capas Estaciones ----------------------------	
+	LAYER
+		NAME "Puntos"
+		STATUS ON
+		DATA "estaciones_mio.shp"
+		TYPE POINT
+		CLASS
+			NAME "Estaciones MIO"
+			STYLE
+			    SYMBOL star
+				SIZE 10
+				COLOR 0 34 125
+				OUTLINECOLOR 0 255 0
+			END
+		END
+	END
+
+
+
+##Importación capas IDESC ----------------------------	
+	LAYER
+		NAME "Rios"
+	  	TYPE RASTER
+	  	STATUS ON
+	  	CONNECTION "http://ws-idesc.cali.gov.co:8081/geoserver/wms?"
+	  	CONNECTIONTYPE WMS
+	  	METADATA
+	    		"wms_srs"             "EPSG:3115"
+	    		"wms_name"            "pot_2014:bcs_hid_rios"
+	   		"wms_server_version"  "1.1.0"
+	   		"wms_format"          "image/png"
+	  	END
+	END 
+
+	LAYER
+	  	NAME "Areas Protegidas"
+	  	TYPE RASTER
+	  	STATUS ON
+	  	CONNECTION "http://ws-idesc.cali.gov.co:8081/geoserver/wms?"
+	 	 CONNECTIONTYPE WMS
+	 	 METADATA
+	  		  "wms_srs"             "EPSG:3115"
+	  		  "wms_name"            "pot_2014:amb_eep_areas_protegidas"
+			   "wms_server_version"  "1.1.0"
+	 		  "wms_format"          "image/png"
+	  	END
+	END 
+	
+	LAYER
+	  	NAME "Zona Ambiental Rio Cauca"
+		 TYPE RASTER
+		STATUS ON
+	 	CONNECTION "http://ws-idesc.cali.gov.co:8081/geoserver/wms?"
+	 	 CONNECTIONTYPE WMS
+	  	METADATA
+	  		  "wms_srs"             "EPSG:3115"
+	  		 "wms_name"            "pot_2014:amb_eep_aeie_proteccion_ambiental_rio_cauca"
+	   		"wms_server_version"  "1.1.0"
+	 		"wms_format"          "image/png"
+			"DESCRIPTION"                "Zona"
+		END
+	END 
+## Creacion de la grilla ----------------------------	
+	
+	LAYER
+		NAME "Grilla"
+		METADATA
+			"DESCRIPTION" "Grid"
+		END
+		TYPE LINE
+		STATUS ON
+		CLASS
+			NAME "Graticule"
+			COLOR 0 0 0
+			LABEL
+				COLOR 120 120 120
+				FONT sans
+				TYPE truetype
+				SIZE 8
+				POSITION AUTO
+				PARTIALS FALSE
+				BUFFER 5
+				OUTLINECOLOR 255 255 255
+			END
+		END
+		PROJECTION
+			"init=epsg:3115"
+		END
+		GRID
+			#LABELFORMAT DDMM
+			#MAXARCS 5
+			#MAXINTERVAL 5
+			#MAXSUBDIVIDE 2
+			
+			LABELFORMAT '%.0fm'
+			MININTERVAL 5000
+		END
+	END
+
+END
